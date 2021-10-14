@@ -174,15 +174,14 @@ public class Kimhyejun_present {
 		array = presentDao.studentList();
 //		System.out.println(System.getProperty("user.dir"));
 		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		System.out.println(array.get(0).fileForm());
-		System.out.println(array.get(1).fileForm());
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("./project/present/" + today + "-check.log"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("./project/present/" + today + "-check.log", false));
 			for (int i = 0; i < array.size(); i++) {
 				bw.write(array.get(i).fileForm());
 				bw.newLine();
 			}
 			bw.flush();
+			bw.close();
 			System.out.println("파일 저장 완료");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
