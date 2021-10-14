@@ -221,10 +221,7 @@ public class Kimhyejun_present {
 	public static void main(String[] args) {
 		Kimhyejun_present obj = new Kimhyejun_present();
 		obj.menu1();
-//		boolean isLogin = obj.login();
-//		if (isLogin == true) {
-//			obj.menu();
-//		}
+
 	}
 
 }
