@@ -197,7 +197,7 @@ public class TodayBoard {
 					board.setHits(board.getHits() + 1);
 				}
 			} else if (type.equals("아이디")) {
-				if (search.equals(board.getName())) {
+				if (search.equals(board.getId())) {
 					searchList.add(board);
 					System.out.println(board);
 					board.setHits(board.getHits() + 1);
