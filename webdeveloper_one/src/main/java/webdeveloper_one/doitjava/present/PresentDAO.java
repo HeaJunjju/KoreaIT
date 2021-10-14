@@ -66,14 +66,15 @@ public class PresentDAO {
 		return map;
 	}
 
-	public void checkAttendance(String type, Object search, String status) {
+	public int checkAttendance(String type, Object search, String status) {
+		int result = 0;
 		getConnection();
 		String sql = "update studenttbl set " + status + "=now() where " + type + "=?";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, search);
 
-			pstmt.executeUpdate();// 실행
+			result = pstmt.executeUpdate();// 실행
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -87,6 +88,7 @@ public class PresentDAO {
 				e.printStackTrace();
 			}
 		}
+		return result;
 	}
 
 	public ArrayList<StudentBean> studentList() {
@@ -287,5 +289,31 @@ public class PresentDAO {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void registerMember(MemberBean member) {
+		getConnection();
+		String sql = "insert into membertbl values(?,?,?)";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getId());
+			pstmt.setString(2, member.getPwd());
+			pstmt.setString(3, member.getName());
+
+			pstmt.executeUpdate();// 실행
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 }

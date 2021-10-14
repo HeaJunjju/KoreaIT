@@ -18,10 +18,45 @@ public class Kimhyejun_present {
 	Scanner scanner = new Scanner(System.in);
 
 	public Kimhyejun_present() {
-		// 시간이 0~8시 사이면 db startCheck, endCheck 초기화
-	}
+		Calendar cal = Calendar.getInstance(Locale.KOREA);
+		int val = cal.get(Calendar.HOUR_OF_DAY);
 
-	private void menu() {
+		if (val >= 0 && val < 8) {
+			new PresentDAO().resetData();
+		}
+	}
+	
+	private void menu1() {
+		while(true) {
+			System.out.println("======출석부 시스템======");
+			System.out.println("1. 회원가입");
+			System.out.println("2. 로그인");
+			System.out.println("3. 종료");
+			System.out.print("메뉴선택>>");
+			int choice = scanner.nextInt();
+			System.out.println("----------------------------------------");
+			switch (choice) {
+			case 1:
+				registerMember();
+				break;
+			case 2:
+				if (login() == true) {
+					menu2();
+				} else {
+					System.out.println("로그인 실패");
+				}
+				break;
+			case 3:
+				System.out.println("종료합니다..");
+				System.exit(0);
+			default:
+				System.out.println("메뉴를 다시 선택하세요");
+				break;
+			}
+		}
+	}
+	
+	private void menu2() {
 		while (true) {
 			System.out.println("=====================");
 			System.out.println("1. 검색(출결체크)");
@@ -55,9 +90,20 @@ public class Kimhyejun_present {
 		}
 
 	}
+	
+	public void registerMember() {
+		System.out.print("아이디: ");
+		String id = scanner.next();
+		System.out.print("비밀번호: ");
+		String pwd = scanner.next();
+		System.out.print("이름: ");
+		String name = scanner.next();
+		
+		MemberBean member = new MemberBean(id, pwd, name);
+		presentDao.registerMember(member);
+	}
 
 	public boolean login() {
-		System.out.println("====출석부 시스템 로그인====");
 		// membertable로 로그인
 		boolean isLogin = false;
 		Map map = presentDao.selectAllMember();
@@ -69,9 +115,6 @@ public class Kimhyejun_present {
 
 		if (map.get(id) != null && map.get(id).equals(pwd)) {
 			isLogin = true;
-		} else {
-			System.out.println("로그인 실패");
-			System.exit(0);
 		}
 		return isLogin;
 	}
@@ -106,9 +149,11 @@ public class Kimhyejun_present {
 		System.out.print("입실/퇴실>>");
 		String status = scanner.next();
 		if (status.equals("입실")) {
-			presentDao.checkAttendance(type, search, "startCheck");
+			int result = presentDao.checkAttendance(type, search, "startCheck");
+			System.out.println(result + "명 입실했습니다.");
 		} else if (status.equals("퇴실")) {
-			presentDao.checkAttendance(type, search, "endCheck");
+			int result = presentDao.checkAttendance(type, search, "endCheck");
+			System.out.println(result + "명 퇴실했습니다");
 		} else {
 			return;
 		}
@@ -129,6 +174,8 @@ public class Kimhyejun_present {
 		array = presentDao.studentList();
 //		System.out.println(System.getProperty("user.dir"));
 		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		System.out.println(array.get(0).fileForm());
+		System.out.println(array.get(1).fileForm());
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter("./project/present/" + today + "-check.log"));
 			for (int i = 0; i < array.size(); i++) {
@@ -136,6 +183,7 @@ public class Kimhyejun_present {
 				bw.newLine();
 			}
 			bw.flush();
+			System.out.println("파일 저장 완료");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -172,17 +220,12 @@ public class Kimhyejun_present {
 	}
 
 	public static void main(String[] args) {
-		Calendar cal = Calendar.getInstance(Locale.KOREA);
-		int val = cal.get(Calendar.HOUR_OF_DAY);
-
-		if (val >= 0 && val < 8) {
-			new PresentDAO().resetData();
-		}
 		Kimhyejun_present obj = new Kimhyejun_present();
-		boolean isLogin = obj.login();
-		if (isLogin == true) {
-			obj.menu();
-		}
+		obj.menu1();
+//		boolean isLogin = obj.login();
+//		if (isLogin == true) {
+//			obj.menu();
+//		}
 	}
 
 }
